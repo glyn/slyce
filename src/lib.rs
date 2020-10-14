@@ -105,6 +105,7 @@ impl Index {
 /// An iterator that counts from an initial number up to a (included or excluded) final limit.
 /// The direction and stride of the iteration can be controlled by the step parameter.
 /// A zero step produces an empty iteration.
+#[derive(Debug)]
 struct RangeIterator {
     end: Bound<usize>,
     step: isize,
@@ -130,6 +131,7 @@ impl RangeIterator {
 }
 
 // Iteration direction, knows how to compare the limit index.
+#[derive(Debug)]
 enum Direction {
     Forwards,
     Backwards,
@@ -275,4 +277,16 @@ mod test {
         assert_eq!(s(Some(6), Some(0), Some(-1)), vec![4, 3, 2, 1]);
         assert_eq!(s(None, Some(0), Some(-1)), vec![4, 3, 2, 1]);
     }
+
+    #[test]
+    fn even() {
+        const LEN: usize = 4;
+
+        fn s(start: Option<isize>, end: Option<isize>, step: Option<isize>) -> Vec<usize> {
+            let (start, end) = (start.into(), end.into());
+            Slice { start, end, step }.indices(LEN).collect()
+        }
+
+        assert_eq!(s(None, None, Some(-2)), vec![3, 1]);
+     }
 }
